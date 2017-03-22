@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+         xsi:schemaLocation="
+  http://java.sun.com/xml/ns/javaee 
+  http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+         id="WebApp_ID" version="3.0">
+
+    <listener>
+        <listener-class>
+            org.springframework.web.context.ContextLoaderListener
+        </listener-class>
+    </listener>
+
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>
+            classpath:/META-INF/spring-context-main.xml
+        </param-value>
+    </context-param>
+
+    <!-- Handles all requests into the application -->
+    <servlet>
+        <servlet-name>Spring MVC Dispatcher Servlet</servlet-name>
+        <servlet-class>
+            org.springframework.web.servlet.DispatcherServlet
+        </servlet-class>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>WEB-INF/web-context.xml</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>Spring MVC Dispatcher Servlet</servlet-name>
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>Spring MVC Dispatcher Servlet</servlet-name>
+        <url-pattern>/va/resources/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>Vaadin Dispatcher Servlet</servlet-name>
+        <servlet-class>
+            com.vaadin.server.VaadinServlet
+        </servlet-class>
+        <init-param>
+            <param-name>UI</param-name>
+            <param-value>org.ikernits.sample.VaadinUI</param-value>
+        </init-param>
+        <!--<init-param>-->
+            <!--<param-name>pushmode</param-name>-->
+            <!--<param-value>automatic</param-value>-->
+        <!--</init-param>-->
+        <!--<init-param>-->
+            <!--<param-name>org.atmosphere.cpr.asyncSupport</param-name>-->
+            <!--<param-value>org.atmosphere.container.JSR356AsyncSupport</param-value>-->
+        <!--</init-param>-->
+        <!--<init-param>-->
+            <!--<param-name>org.atmosphere.cpr.asyncSupport</param-name>-->
+            <!--<param-value>org.atmosphere.container.Jetty9AsyncSupportWithWebSocket</param-value>-->
+        <!--</init-param>-->
+        <async-supported>true</async-supported>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>Vaadin Dispatcher Servlet</servlet-name>
+        <url-pattern>/va/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>Vaadin Dispatcher Servlet</servlet-name>
+        <url-pattern>/VAADIN/*</url-pattern>
+    </servlet-mapping>
+
+
+    <error-page>
+        <error-code>404</error-code>
+        <location>/pages/error/404.html</location>
+    </error-page>
+
+    <filter>
+        <filter-name>requestLogger</filter-name>
+        <filter-class>org.ikernits.sample.log.RequestLoggerFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>requestLogger</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+</web-app>

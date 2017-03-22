@@ -1,0 +1,516 @@
+@mixin valoext {
+  @include valo;
+
+  #themeSelect {
+    position: fixed;
+    z-index: 1000;
+    top: 0;
+    right: 0;
+    padding: 0 10px;
+    background-color: darken($v-app-background-color, 5%);
+    background-color: rgba(darken($v-app-background-color, 5%), .9);
+    color: valo-font-color($v-app-background-color);
+    border-radius: 0 0 0 $v-border-radius;
+
+    &:before {
+      content: "Theme:";
+    }
+
+    select {
+      background: transparent;
+      color: inherit;
+      border: none;
+      display: inline-block;
+    }
+  }
+
+  .v-ui {
+    @include width-range($max: 800px) {
+      #themeSelect {
+        top: $v-unit-size;
+      }
+    }
+  }
+
+  $color1: hsl(220, 5%, 38%);
+  $color2: #5d73c0;
+  $color3: #3dbc1a;
+  $color4: #d2f4f3;
+  $color5: #fe902a;
+  $colors: $color1, $color2, $color3, $color4, $color5;
+
+  .fg-color-green {
+    background-color: #00a300;
+  }
+  .fg-color-greendark {
+    background-color: #1e7145;
+  }
+  .fg-color-greenlight {
+    background-color: #99b433;
+  }
+  .fg-color-magenta {
+    background-color: #ff0097;
+  }
+  .fg-color-purplelight {
+    background-color: #9f00a7;
+  }
+  .fg-color-purple {
+    background-color: #7e3878;
+  }
+  .fg-color-purpledark {
+    background-color: #603cba;
+  }
+  .fg-color-darken {
+    background-color: #1d1d1d;
+  }
+  .fg-color-teal {
+    background-color: #00aba9;
+  }
+  .fg-color-bluelight {
+    background-color: #eff4ff;
+  }
+  .fg-color-blue {
+    background-color: #2d89ef;
+  }
+  .fg-color-bluedark {
+    background-color: #2b5797;
+  }
+  .fg-color-yellow {
+    background-color: #ffc40d;
+  }
+  .fg-color-orange {
+    background-color: #e3a21a;
+  }
+  .fg-color-orangedark {
+    background-color: #da532c;
+  }
+  .fg-color-reddark {
+    background-color: #b91d47;
+  }
+  .fg-color-red {
+    background-color: #ee1111;
+  }
+  .fg-color-white {
+    background-color: #ffffff;
+  }
+
+  .bg-color-green {
+    background-color: #00a300;
+  }
+  .bg-color-greendark {
+    background-color: #1e7145;
+  }
+  .bg-color-greenlight {
+    background-color: #99b433;
+  }
+  .bg-color-magenta {
+    background-color: #ff0097;
+  }
+  .bg-color-purplelight {
+    background-color: #9f00a7;
+  }
+  .bg-color-purple {
+    background-color: #7e3878;
+  }
+  .bg-color-purpledark {
+    background-color: #603cba;
+  }
+  .bg-color-darken {
+    background-color: #1d1d1d;
+  }
+  .bg-color-teal {
+    background-color: #00aba9;
+  }
+  .bg-color-bluelight {
+    background-color: #eff4ff;
+  }
+  .bg-color-blue {
+    background-color: #2d89ef;
+  }
+  .bg-color-bluedark {
+    background-color: #2b5797;
+  }
+  .bg-color-yellow {
+    background-color: #ffc40d;
+  }
+  .bg-color-orange {
+    background-color: #e3a21a;
+  }
+  .bg-color-orangedark {
+    background-color: #da532c;
+  }
+  .bg-color-reddark {
+    background-color: #b91d47;
+  }
+  .bg-color-red {
+    background-color: #ee1111;
+  }
+  .bg-color-white {
+    background-color: #ffffff;
+  }
+
+  .v-textfield-color1 {
+    @include valo-textfield-style($background-color: $color1);
+  }
+
+  .v-textfield-color2 {
+    @include valo-textfield-style($background-color: $color3);
+  }
+
+  .v-textfield-color3 {
+    @include valo-textfield-style($background-color: $color4);
+  }
+
+  .v-textarea-font-monospace {
+    font-family: monospace;
+  }
+
+  .v-textarea-color1 {
+    @include valo-textarea-style($background-color: $color1);
+  }
+
+  .v-textarea-color2 {
+    @include valo-textarea-style($background-color: $color3);
+  }
+
+  .v-textarea-color3 {
+    @include valo-textarea-style($background-color: $color4);
+  }
+
+
+  .v-datefield-color1 {
+    @include valo-datefield-style($background-color: $color1);
+  }
+
+  .v-datefield-color2 {
+    @include valo-datefield-style($background-color: $color3);
+  }
+
+  .v-datefield-color3 {
+    @include valo-datefield-style($background-color: $color4);
+  }
+
+
+  .v-filterselect-color1 {
+    @include valo-combobox-style($background-color: $color1);
+  }
+
+  .v-filterselect-color2 {
+    @include valo-combobox-style($background-color: $color3);
+  }
+
+  .v-filterselect-color3 {
+    @include valo-combobox-style($background-color: $color4);
+  }
+
+
+  $copy: $v-selection-color;
+  $v-selection-color: white;
+  .v-checkbox-color1 {
+    @include valo-checkbox-style($background-color: $color1);
+  }
+
+  .v-checkbox-color2 {
+    @include valo-checkbox-style($background-color: $color2);
+  }
+  $v-selection-color: $copy;
+
+
+  .v-slider-color1 {
+    @include valo-slider-handle-style($background-color: $color1);
+  }
+
+  .v-slider-color2 {
+    @include valo-slider-track-style($background-color: $color3);
+  }
+
+  .v-slider-color3 {
+    @include valo-slider-indicator-style($background-color: #dcdc1e);
+  }
+
+  .v-panel-color1 {
+    background-color: $color5
+  }
+
+  .v-panel-color2 {
+    background-color: $color2
+  }
+
+  .v-background-color1 {
+    background-color: $color5
+  }
+
+  .v-panel-caption-color1 {
+    @include valo-panel-caption-style($background-color: $color1);
+  }
+
+  .v-panel-caption-color2 {
+    @include valo-panel-caption-style($background-color: $color3);
+  }
+
+  .v-panel-caption-color3 {
+    @include valo-panel-caption-style($background-color: $color5);
+  }
+
+  // Show splitpanel borders
+  .v-splitpanel-vertical,
+  .v-splitpanel-horizontal {
+    outline: 1px dotted rgba(gray, .2);
+  }
+
+  .v-slider-ticks {
+    @include valo-slider-ticks($tick-count: 5);
+  }
+
+  .v-accordion-item-color1 .v-accordion-item-caption {
+    @include valo-accordion-item-caption-style($background-color: $color2);
+  }
+
+  .v-menubar-color1 {
+    @include valo-menubar-style($background-color: $v-selection-color, $unit-size: null);
+  }
+  
+  .valo-content > .v-layout {
+  	max-width: 960px;
+  	display: block;
+  	margin: 0 auto;
+  }
+
+
+  .margin-normal {
+    margin: 27px 27px 27px 27px;
+  }
+
+  .margin-small {
+    margin: 9px 9px 9px 9px;
+  }
+
+  .margin-tiny {
+    margin: 3px 3px 3px 3px;
+  }
+
+  .padding-normal {
+    padding: 27px 27px 27px 27px;
+  }
+
+  .padding-small {
+    padding: 9px 9px 9px 9px;
+  }
+
+  .padding-tiny {
+    padding: 3px 3px 3px 3px;
+  }
+
+
+  .margin-top-normal {
+    margin-top: 27px;
+  }
+
+  .margin-top-small {
+    margin-top: 9px;
+  }
+
+  .margin-top-tiny {
+    margin-top: 3px;
+  }
+
+  .padding-top-normal {
+    padding-top: 27px;
+  }
+
+  .padding-top-small {
+    padding-top: 9px;
+  }
+
+  .padding-top-tiny {
+    padding-top: 3px;
+  }
+
+
+  .margin-left-normal {
+    margin-left: 27px;
+  }
+
+  .margin-left-small {
+    margin-left: 9px;
+  }
+
+  .margin-left-tiny {
+    margin-left: 3px;
+  }
+
+  .padding-left-normal {
+    padding-left: 27px;
+  }
+
+  .padding-left-small {
+    padding-left: 9px;
+  }
+
+  .padding-left-tiny {
+    padding-left: 3px;
+  }
+
+
+  .margin-bottom-normal {
+    margin-bottom: 27px;
+  }
+
+  .margin-bottom-small {
+    margin-bottom: 9px;
+  }
+
+  .margin-bottom-tiny {
+    margin-bottom: 3px;
+  }
+
+  .padding-bottom-normal {
+    padding-bottom: 27px;
+  }
+
+  .padding-bottom-small {
+    padding-bottom: 9px;
+  }
+
+  .padding-bottom-tiny {
+    padding-bottom: 3px;
+  }
+
+
+  .margin-right-normal {
+    margin-right: 27px;
+  }
+
+  .margin-right-small {
+    margin-right: 9px;
+  }
+
+  .margin-right-tiny {
+    margin-right: 3px;
+  }
+
+  .padding-right-normal {
+    padding-right: 27px;
+  }
+
+  .padding-right-small {
+    padding-right: 9px;
+  }
+
+  .padding-right-tiny {
+    padding-right: 3px;
+  }
+
+
+
+  .fg-color-green {
+    background-color: #00a300;
+  }
+  .fg-color-greendark {
+    background-color: #1e7145;
+  }
+  .fg-color-greenlight {
+    background-color: #99b433;
+  }
+  .fg-color-magenta {
+    background-color: #ff0097;
+  }
+  .fg-color-purplelight {
+    background-color: #9f00a7;
+  }
+  .fg-color-purple {
+    background-color: #7e3878;
+  }
+  .fg-color-purpledark {
+    background-color: #603cba;
+  }
+  .fg-color-darken {
+    background-color: #1d1d1d;
+  }
+  .fg-color-teal {
+    background-color: #00aba9;
+  }
+  .fg-color-bluelight {
+    background-color: #eff4ff;
+  }
+  .fg-color-blue {
+    background-color: #2d89ef;
+  }
+  .fg-color-bluedark {
+    background-color: #2b5797;
+  }
+  .fg-color-yellow {
+    background-color: #ffc40d;
+  }
+  .fg-color-orange {
+    background-color: #e3a21a;
+  }
+  .fg-color-orangedark {
+    background-color: #da532c;
+  }
+  .fg-color-reddark {
+    background-color: #b91d47;
+  }
+  .fg-color-red {
+    background-color: #ee1111;
+  }
+  .fg-color-white {
+    background-color: #ffffff;
+  }
+
+  .bg-color-green {
+    background-color: #00a300;
+  }
+  .bg-color-greendark {
+    background-color: #1e7145;
+  }
+  .bg-color-greenlight {
+    background-color: #99b433;
+  }
+  .bg-color-magenta {
+    background-color: #ff0097;
+  }
+  .bg-color-purplelight {
+    background-color: #9f00a7;
+  }
+  .bg-color-purple {
+    background-color: #7e3878;
+  }
+  .bg-color-purpledark {
+    background-color: #603cba;
+  }
+  .bg-color-darken {
+    background-color: #1d1d1d;
+  }
+  .bg-color-teal {
+    background-color: #00aba9;
+  }
+  .bg-color-bluelight {
+    background-color: #eff4ff;
+  }
+  .bg-color-blue {
+    background-color: #2d89ef;
+  }
+  .bg-color-bluedark {
+    background-color: #2b5797;
+  }
+  .bg-color-yellow {
+    background-color: #ffc40d;
+  }
+  .bg-color-orange {
+    background-color: #e3a21a;
+  }
+  .bg-color-orangedark {
+    background-color: #da532c;
+  }
+  .bg-color-reddark {
+    background-color: #b91d47;
+  }
+  .bg-color-red {
+    background-color: #ee1111;
+  }
+  .bg-color-white {
+    background-color: #ffffff;
+  }
+
+}
