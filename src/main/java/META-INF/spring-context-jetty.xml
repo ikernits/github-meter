@@ -13,14 +13,14 @@
         <property name="ignoreResourceNotFound" value="true"/>
     </bean>
 
-    <bean id="jettyWebConfigResolver" class="org.ikernits.sample.jetty.JettyWebConfigResolver">
+    <bean id="jettyWebConfigResolver" class="com.wrike.github.meter.jetty.JettyWebConfigResolver">
         <property name="configName" value="${server.web.xml}"/>
     </bean>
 
-    <bean id="jettyErrorHandler" class="org.ikernits.sample.jetty.JettyErrorHandler">
+    <bean id="jettyErrorHandler" class="com.wrike.github.meter.jetty.JettyErrorHandler">
     </bean>
 
-    <bean id="jettyServerLifecycleService" class="org.ikernits.sample.jetty.JettyServerLifecycleService">
+    <bean id="jettyServerLifecycleService" class="com.wrike.github.meter.jetty.JettyServerLifecycleService">
         <property name="server" ref="jettyServer"/>
         <property name="shutdownPort" value="${server.shutdown.port}"/>
         <property name="shutdownCommand" value="${server.shutdown.command}"/>

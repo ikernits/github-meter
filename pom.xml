@@ -263,7 +263,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib</classpathPrefix>
-                            <mainClass>org.ikernits.sample.jetty.JettyMain</mainClass>
+                            <mainClass>com.wrike.github.meter.jetty.JettyMain</mainClass>
                         </manifest>
                         <manifestEntries>
                             <Build-Date>${project.build.date}</Build-Date>

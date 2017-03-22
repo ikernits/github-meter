@@ -26,7 +26,7 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Layout;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
-import org.ikernits.sample.util.ListenerList;
+import com.wrike.github.meter.util.ListenerList;
 import org.ikernits.vaadin.VaadinBuilders;
 import org.ikernits.vaadin.VaadinComponentAttributes.ComponentAttributes.Side;
 import org.ikernits.vaadin.VaadinComponentAttributes.ComponentAttributes.Size;

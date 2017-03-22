@@ -14,23 +14,5 @@ http://www.springframework.org/schema/context/spring-context-4.3.xsd
 
     <bean parent="propertyPlaceholderConfigurer"/>
 
-    <bean name="/hello" class="org.ikernits.sample.mvc.HelloController"/>
-    <bean name="/error" class="org.ikernits.sample.mvc.ErrorController"/>
-    <bean name="/test" class="org.ikernits.sample.mvc.TestController">
-        <property name="testBean" ref="test"/>
-        <property name="defaultProperty" value="${default.name}"/>
-        <property name="localProperty" value="${local.name}"/>
-        <property name="configProperty" value="${config.name}"/>
-    </bean>
-    <bean name="/exception" class="org.ikernits.sample.mvc.ExceptionController"/>
-
-    <bean name="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping"
-          class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping">
-        <property name="order" value="0"/>
-    </bean>
-
-    <alias name="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping"
-           alias="beanNameUrlHandlerMapping"/>
-
     <mvc:resources mapping="/**" location="classpath:/static/,classpath:/pages/"/>
 </beans>

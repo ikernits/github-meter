@@ -1,0 +1,87 @@
+
+# CUSTOM
+.svn
+local
+logs
+# =========================
+
+
+# WINDOWS
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msm
+*.msp
+*.lnk
+
+# OSX
+# =========================
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# IDEA
+# =========================
+.idea
+*.iml
+target
+
+# ALTIUM
+# =========================
+private
+__Previews
+DataSource
+History
+Project Outputs*
+*.PrjPCBStructure
+output
+
+# ECLIPSE
+# =========================
+Release
+Release_*
+Debug
+Debug_*
+.settings
+
+# MPIDE
+# =========================
+~*
+*.o
+*.d
+*.__i
+*.crf
+*.bak
+*.Bak
+*.htm
+*.Inp
+*.map
+*.plg
+*.tra
+*.axf
+
+*.lst
+*.err
+*.log
+*.inx
+*.cof
+*.hex
+*.history
+
+# COOCOX
+# =========================
+*.comarker
+*.comemgui
+*.cogui
+*.elf.xcodeproj

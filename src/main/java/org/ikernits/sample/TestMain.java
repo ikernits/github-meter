@@ -1,7 +1,7 @@
 package org.ikernits.sample;
 
 import org.apache.log4j.Logger;
-import org.ikernits.sample.log.Log4jConfigurer;
+import com.wrike.github.meter.log.Log4jConfigurer;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
