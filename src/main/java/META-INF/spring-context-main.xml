@@ -19,4 +19,28 @@
         <property name="logList" value="${log.list}"/>
     </bean>
 
+    <bean id="httpClientService" class="com.wrike.github.meter.service.HttpClientServiceApacheImpl">
+        <property name="maxConnections" value="32"/>
+        <property name="maxConnectionsPerRoute" value="32"/>
+        <property name="connectionTtlSeconds" value="10"/>
+        <property name="poolTimeoutMillis" value="10000"/>
+        <property name="connectTimeoutMillis" value="10000"/>
+        <property name="socketTimeoutMillis" value="10000"/>
+        <property name="redirectsEnabled" value="true"/>
+        <property name="responseSizeLimitBytes" value="10000000"/>
+    </bean>
+
+    <bean id="gitHubQueryService" class="com.wrike.github.meter.service.GitHubQueryService">
+        <property name="httpClientService" ref="httpClientService"/>
+    </bean>
+
+    <bean id="gitHubDataService" class="com.wrike.github.meter.service.GitHubDataService">
+        <property name="dataDir" value="${github.user.data.dir}"/>
+        <property name="avatarDir" value="${github.user.avatar.dir}"/>
+    </bean>
+
+    <bean id="vaadinServices" class="com.wrike.github.meter.service.VaadinServices">
+        <property name="gitHubDataService" ref="gitHubDataService"/>
+        <property name="gitHubQueryService" ref="gitHubQueryService"/>
+    </bean>
 </beans>
