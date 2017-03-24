@@ -27,7 +27,7 @@
         </servlet-class>
         <init-param>
             <param-name>UI</param-name>
-            <param-value>com.wrike.github.meter.VaadinUI</param-value>
+            <param-value>com.wrike.github.meter.ui.RegistrationUI</param-value>
         </init-param>
         <init-param>
             <param-name>pushmode</param-name>

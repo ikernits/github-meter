@@ -1,4 +1,4 @@
-package com.wrike.github.meter;
+package com.wrike.github.meter.ui;
 
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
@@ -17,10 +17,8 @@ import com.wrike.github.meter.domain.GitHubUser;
 import com.wrike.github.meter.service.GitHubDataService;
 import com.wrike.github.meter.service.GitHubQueryService;
 import com.wrike.github.meter.service.VaadinServices;
-import javafx.beans.property.ObjectProperty;
 import org.apache.log4j.Logger;
 import org.ikernits.vaadin.VaadinBuilders;
-import org.ikernits.vaadin.VaadinComponentStyles.ColorStyle;
 
 import java.util.List;
 
@@ -35,10 +33,10 @@ import static org.ikernits.vaadin.VaadinComponentAttributes.LayoutAttributes.vaS
  */
 @Title("GitHub Meter Challenge")
 @Theme("valo-ext-flat")
-public class VaadinUI extends UI {
+public class RegistrationUI extends UI {
 
 
-    static Logger log = Logger.getLogger(VaadinUI.class);
+    static Logger log = Logger.getLogger(RegistrationUI.class);
 
 
     private String gitHubUser;
