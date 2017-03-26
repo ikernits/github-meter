@@ -7,6 +7,7 @@ public class GitHubUser {
     private String repos_url;
     private String email;
     private long public_repos;
+    private long followers;
 
     public String getLogin() {
         return login;
@@ -30,5 +31,9 @@ public class GitHubUser {
 
     public long getPublic_repos() {
         return public_repos;
+    }
+
+    public long getFollowers() {
+        return followers;
     }
 }

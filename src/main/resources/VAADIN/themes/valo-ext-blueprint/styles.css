@@ -14984,3 +14984,22 @@ div.v-layout.v-horizontal.v-widget {
 .valo-ext-blueprint .bg-color-white {
 	background-color: #ffffff;
 }
+
+.valo-ext-blueprint .background-pattern {
+	background-image: url(/img/pattern_01.png);
+	background-color: aliceblue;
+}
+
+.valo-ext-blueprint .leaderboard {
+	background-color: ALICEBLUE;
+	border-style: dashed;
+	border-width: medium;
+	border-color: lightseagreen;
+}
+
+.valo-ext-blueprint .registraton {
+	background-color: ALICEBLUE;
+	border-style: dashed;
+	border-width: medium;
+	border-color: lightseagreen;
+}

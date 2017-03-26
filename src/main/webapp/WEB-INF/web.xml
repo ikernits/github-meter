@@ -21,13 +21,35 @@
     </context-param>
 
     <servlet>
+        <servlet-name>Spring Dispatcher Servlet</servlet-name>
+        <servlet-class>
+            org.springframework.web.servlet.DispatcherServlet
+        </servlet-class>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>WEB-INF/web-context.xml</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>Spring Dispatcher Servlet</servlet-name>
+        <url-pattern>/avatars/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>Spring Dispatcher Servlet</servlet-name>
+        <url-pattern>/img/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
         <servlet-name>Vaadin Dispatcher Servlet</servlet-name>
         <servlet-class>
             com.vaadin.server.VaadinServlet
         </servlet-class>
         <init-param>
             <param-name>UI</param-name>
-            <param-value>com.wrike.github.meter.ui.RegistrationUI</param-value>
+            <param-value>com.wrike.github.meter.ui.MainUI</param-value>
         </init-param>
         <init-param>
             <param-name>pushmode</param-name>

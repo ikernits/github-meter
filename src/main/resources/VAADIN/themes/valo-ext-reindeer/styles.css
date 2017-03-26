@@ -15258,3 +15258,22 @@ div.v-layout.v-horizontal.v-widget {
 .valo-ext-reindeer .bg-color-white {
 	background-color: #ffffff;
 }
+
+.valo-ext-reindeer .background-pattern {
+	background-image: url(/img/pattern_01.png);
+	background-color: aliceblue;
+}
+
+.valo-ext-reindeer .leaderboard {
+	background-color: ALICEBLUE;
+	border-style: dashed;
+	border-width: medium;
+	border-color: lightseagreen;
+}
+
+.valo-ext-reindeer .registraton {
+	background-color: ALICEBLUE;
+	border-style: dashed;
+	border-width: medium;
+	border-color: lightseagreen;
+}

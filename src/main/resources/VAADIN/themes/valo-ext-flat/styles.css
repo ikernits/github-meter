@@ -15073,3 +15073,22 @@ div.v-layout.v-horizontal.v-widget {
 .valo-ext-flat .bg-color-white {
 	background-color: #ffffff;
 }
+
+.valo-ext-flat .background-pattern {
+	background-image: url(/img/pattern_01.png);
+	background-color: aliceblue;
+}
+
+.valo-ext-flat .leaderboard {
+	background-color: ALICEBLUE;
+	border-style: dashed;
+	border-width: medium;
+	border-color: lightseagreen;
+}
+
+.valo-ext-flat .registraton {
+	background-color: ALICEBLUE;
+	border-style: dashed;
+	border-width: medium;
+	border-color: lightseagreen;
+}

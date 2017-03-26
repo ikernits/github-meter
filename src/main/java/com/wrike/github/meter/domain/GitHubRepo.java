@@ -8,6 +8,7 @@ public class GitHubRepo {
     private boolean fork;
     private long stargazers_count;
     private long forks_count;
+    private long watchers_count;
     private String language;
 
     public GitHubUser getOwner() {
@@ -36,5 +37,9 @@ public class GitHubRepo {
 
     public String getLanguage() {
         return language;
+    }
+
+    public long getWatchers_count() {
+        return watchers_count;
     }
 }

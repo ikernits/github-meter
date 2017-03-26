@@ -63,7 +63,10 @@ public class GitHubDataService implements InitializingBean {
             for (File dataFile : userDataFiles) {
                 try {
                     GitHubUserData userData = gson.fromJson(FileUtils.readFileToString(dataFile), GitHubUserData.class);
-                    gitHubUserDataMap.put(userData.user.getLogin(), userData);
+                    GitHubUserData currentData = gitHubUserDataMap.get(userData.user.getLogin());
+                    if (currentData == null || currentData.timestamp < userData.timestamp) {
+                        gitHubUserDataMap.put(userData.user.getLogin(), userData);
+                    }
                 } catch (IOException | JsonParseException e) {
                     log.warn("failed to load userdata file: " + dataFile, e);
                 }
@@ -92,6 +95,15 @@ public class GitHubDataService implements InitializingBean {
 
     public Set<String> listGitHubUsers() {
         return gitHubUserDataMap.keySet();
+    }
+
+    public GitHubUser findGitHubUser(String username) {
+        GitHubUserData userData = gitHubUserDataMap.get(username);
+        if (userData == null) {
+            return null;
+        } else {
+            return userData.user;
+        }
     }
 
     public List<GitHubRepo> listGitHubUserRepos(String username) {

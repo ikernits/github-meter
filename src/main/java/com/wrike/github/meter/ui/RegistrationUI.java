@@ -1,12 +1,13 @@
 package com.wrike.github.meter.ui;
 
-import com.vaadin.annotations.Theme;
-import com.vaadin.annotations.Title;
-import com.vaadin.server.VaadinRequest;
+import com.vaadin.server.ErrorMessage;
+import com.vaadin.server.Sizeable;
+import com.vaadin.server.UserError;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
@@ -21,6 +22,7 @@ import org.apache.log4j.Logger;
 import org.ikernits.vaadin.VaadinBuilders;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 
 import static org.ikernits.vaadin.VaadinComponentAttributes.ComponentAttributes.vaHeight100;
 import static org.ikernits.vaadin.VaadinComponentAttributes.ComponentAttributes.vaStyleMarginNormal;
@@ -28,20 +30,13 @@ import static org.ikernits.vaadin.VaadinComponentAttributes.ComponentAttributes.
 import static org.ikernits.vaadin.VaadinComponentAttributes.ComponentAttributes.vaWidth100;
 import static org.ikernits.vaadin.VaadinComponentAttributes.LayoutAttributes.vaSpacing;
 
-/**
- * Created by ikernits on 10/10/15.
- */
-@Title("GitHub Meter Challenge")
-@Theme("valo-ext-flat")
-public class RegistrationUI extends UI {
-
-
+public class RegistrationUI {
     static Logger log = Logger.getLogger(RegistrationUI.class);
 
 
-    private String gitHubUser;
+    private GitHubUser gitHubUser;
+    private List<GitHubRepo> gitHubRepos;
     private long gitHubReposCount;
-    private String avatarUrl;
 
     private GitHubDataService gitHubDataService = VaadinServices.getGitHubDataService();
     private GitHubQueryService gitHubQueryService = VaadinServices.getGitHubQueryService();
@@ -50,18 +45,18 @@ public class RegistrationUI extends UI {
         VerticalLayout detailsLayout;
         HorizontalLayout userLayout = VaadinBuilders.horizontalLayout()
             .setAttributes(vaStyleMarginNormal)
-            .setWidth(600, Unit.PIXELS)
-            .setHeight(180, Unit.PIXELS)
+            .setWidth(600, Sizeable.Unit.PIXELS)
+            .setHeight(180, Sizeable.Unit.PIXELS)
             .setDefaultComponentAlignment(Alignment.MIDDLE_CENTER)
             .addComponent(VaadinBuilders.label()
-                .setWidth(200, Unit.PIXELS)
-                .setHeight(160, Unit.PIXELS)
-                .setValue("<img style=\"width:160px; height:160px\" src=\"" + avatarUrl + "\"></img>")
+                .setWidth(200, Sizeable.Unit.PIXELS)
+                .setHeight(160, Sizeable.Unit.PIXELS)
+                .setValue("<img style=\"width:160px; height:160px\" src=\"" + gitHubUser.getAvatar_url() + "\"></img>")
                 .setContentMode(ContentMode.HTML)
                 .build())
             .addComponent(detailsLayout = VaadinBuilders.verticalLayout()
                 .addComponent(VaadinBuilders.label()
-                    .setValue("<span style=\"font-size: 50px\">" + gitHubUser + "</span>")
+                    .setValue("<span style=\"font-size: 50px\">" + gitHubUser.getLogin() + "</span>")
                     .setContentMode(ContentMode.HTML)
                     .build())
                 .addComponent(VaadinBuilders.label()
@@ -75,21 +70,39 @@ public class RegistrationUI extends UI {
 
         VerticalLayout form = VaadinBuilders.verticalLayout()
             .setAttributes(vaStyleMarginNormal)
-            .setWidth(600, Unit.PIXELS)
+            .setWidth(600, Sizeable.Unit.PIXELS)
             .setHeightUndefined()
             .setDefaultComponentAlignment(Alignment.MIDDLE_CENTER)
             .addComponent(VaadinBuilders.label()
                 .setAttributes(vaStyleMarginNormal)
                 .setWidthUndefined()
-                .setHeight(50, Unit.PIXELS)
+                .setHeight(50, Sizeable.Unit.PIXELS)
                 .setContentMode(ContentMode.HTML)
                 .setValue("<h1><span style = \"align:middle\">We have found you!</span></h1>")
                 .build())
             .addComponent(userLayout)
-            .addComponent(VaadinBuilders.button()
-                .setAttributes(vaStyleMarginNormal)
-                .setCaption("Challenge!")
-                .addClickListener(e -> UI.getCurrent().setContent(createRegistrationPanel()))
+            .addComponent(VaadinBuilders.horizontalLayout()
+                .setDefaultComponentAlignment(Alignment.MIDDLE_CENTER)
+                .addComponent(
+                    VaadinBuilders.button()
+                        .setAttributes(vaStyleMarginNormal)
+                        .setCaption("No, it is not me")
+                        .addClickListener(e -> {
+                            gitHubUser = null;
+                            container.removeAllComponents();
+                            container.addComponent(createRegistrationPanel());
+                        })
+                        .build())
+                .addComponent(
+                    VaadinBuilders.button()
+                        .setAttributes(vaStyleMarginNormal)
+                        .setCaption("I'm going in!")
+                        .addClickListener(e -> {
+                            storeGitHubUser();
+                            container.removeAllComponents();
+                            container.addComponent(createRegistrationPanel());
+                        })
+                        .build())
                 .build())
             .build();
 
@@ -100,8 +113,8 @@ public class RegistrationUI extends UI {
             .build();
 
         Panel panel = VaadinBuilders.panel()
-            .setWidth(700, Unit.PIXELS)
-            .setHeight(500, Unit.PIXELS)
+            .setWidth(700, Sizeable.Unit.PIXELS)
+            .setHeight(500, Sizeable.Unit.PIXELS)
             .setContent(content)
             .build();
 
@@ -114,50 +127,47 @@ public class RegistrationUI extends UI {
     }
 
     private boolean loadGitHubUserData(String username) {
-        GitHubUser user = gitHubQueryService.findGitHubUser(username);
-        if (user == null) {
+        gitHubUser = gitHubQueryService.findGitHubUser(username);
+        if (gitHubUser == null) {
             return false;
         }
 
-        List<GitHubRepo> repos = gitHubQueryService.listGitHubRepos(user);
-        if (repos.size() == 0) {
+        gitHubRepos = gitHubQueryService.listGitHubRepos(gitHubUser);
+        if (gitHubRepos.size() == 0) {
             return false;
         }
 
-        GitHubAvatar avatar = gitHubQueryService.loadGitHubAvatar(user);
-        gitHubDataService.addGitHubUser(user, repos, avatar);
-
-        gitHubUser = user.getLogin();
-        avatarUrl = user.getAvatar_url();
-        gitHubReposCount = repos.stream()
-            .filter(r -> r.getOwner().getId() == user.getId())
+        gitHubReposCount = gitHubRepos.stream()
+            .filter(r -> r.getOwner().getId() == gitHubUser.getId())
             .count();
 
         return true;
     }
 
-    protected Component createRegistrationPanel() {
-        TextField username;
+    private void storeGitHubUser() {
+        if (gitHubUser != null) {
+            GitHubAvatar avatar = gitHubQueryService.loadGitHubAvatar(gitHubUser);
+            gitHubDataService.addGitHubUser(gitHubUser, gitHubRepos, avatar);
+        }
+    }
 
+    private Component createNotFoundPanel(String username) {
         VerticalLayout form = VaadinBuilders.verticalLayout()
             .setAttributes(vaStylePaddingNormal, vaSpacing)
-            .setWidth(500, Unit.PIXELS)
-            .setHeight(300, Unit.PIXELS)
+            .setWidth(500, Sizeable.Unit.PIXELS)
+            .setHeight(300, Sizeable.Unit.PIXELS)
             .setDefaultComponentAlignment(Alignment.MIDDLE_CENTER)
             .addComponent(VaadinBuilders.label()
                 .setWidthUndefined()
                 .setContentMode(ContentMode.HTML)
-                .setValue("<h1><span style = \"align:middle\">Welcome to GitHub Meter</span></h1>")
-                .build())
-            .addComponent(username = VaadinBuilders.textField()
-                .setCaption("Enter your GitHub Username")
-                .setAttributes(vaWidth100)
+                .setValue("<div style = \"text-align:center; font-size: 32px\">Sorry, we have not found</div>" +
+                    "<div style = \"text-align:center; font-size: 40px\">" + username + "</div>")
                 .build())
             .addComponent(VaadinBuilders.button()
-                .setCaption("Get ready for challenge")
+                .setCaption("Go back to registration")
                 .addClickListener(e -> {
-                    loadGitHubUserData(username.getValue());
-                    UI.getCurrent().setContent(createSearchPanel());
+                    container.removeAllComponents();
+                    container.addComponent(createRegistrationPanel());
                 })
                 .build())
             .build();
@@ -168,22 +178,64 @@ public class RegistrationUI extends UI {
             .addComponent(form)
             .build();
 
-        Panel panel = VaadinBuilders.panel()
-            .setWidth(700, Unit.PIXELS)
-            .setHeight(500, Unit.PIXELS)
+        return VaadinBuilders.panel()
+            .setWidth(700, Sizeable.Unit.PIXELS)
+            .setHeight(500, Sizeable.Unit.PIXELS)
             .setContent(content)
             .build();
+    }
 
-        return VaadinBuilders.verticalLayout()
-            .setAttributes(vaWidth100, vaHeight100, vaSpacing)
+    private Component createRegistrationPanel() {
+        TextField username;
+
+        VerticalLayout form = VaadinBuilders.verticalLayout()
+            .setAttributes(vaStylePaddingNormal, vaSpacing)
+            .setWidth(500, Sizeable.Unit.PIXELS)
+            .setHeight(300, Sizeable.Unit.PIXELS)
             .setDefaultComponentAlignment(Alignment.MIDDLE_CENTER)
-            .addComponent(panel)
+            .addComponent(VaadinBuilders.label()
+                .setWidthUndefined()
+                .setContentMode(ContentMode.HTML)
+                .setValue("<div style = \"text-align:center; font-size: 32px\">Welcome to GitHub Meter</div>")
+                .build())
+            .addComponent(username = VaadinBuilders.textField()
+                .setCaption("Enter your GitHub Username")
+                .setAttributes(vaWidth100)
+                .build())
+            .addComponent(VaadinBuilders.button()
+                .setCaption("Get ready for challenge")
+                .addClickListener(e -> {
+                    container.removeAllComponents();
+                    if (loadGitHubUserData(username.getValue())) {
+                        container.addComponent(createSearchPanel());
+                    } else {
+                        container.addComponent(createNotFoundPanel(username.getValue()));
+                    }
+                })
+                .build())
+            .build();
+
+        VerticalLayout content = VaadinBuilders.verticalLayout()
+            .setAttributes(vaWidth100, vaHeight100)
+            .setDefaultComponentAlignment(Alignment.MIDDLE_CENTER)
+            .addComponent(form)
+            .build();
+
+        return VaadinBuilders.panel()
+            .setWidth(700, Sizeable.Unit.PIXELS)
+            .setHeight(500, Sizeable.Unit.PIXELS)
+            .setContent(content)
             .build();
     }
 
-    @Override
-    protected void init(VaadinRequest vaadinRequest) {
-        setContent(createRegistrationPanel());
+    VerticalLayout container = VaadinBuilders.verticalLayout()
+        .setWidthUndefined()
+        .setHeightUndefined()
+        .build();
+
+    protected Component create() {
+        container.removeAllComponents();
+        container.addComponent(createRegistrationPanel());
+        return container;
     }
 }
-

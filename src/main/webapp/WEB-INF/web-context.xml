@@ -14,5 +14,5 @@ http://www.springframework.org/schema/context/spring-context-4.3.xsd
 
     <bean parent="propertyPlaceholderConfigurer"/>
 
-    <mvc:resources mapping="/**" location="classpath:/static/,classpath:/pages/"/>
+    <mvc:resources mapping="/**" location="file:./local/data/avatars/,classpath:/static/img/"/>
 </beans>
