@@ -72,11 +72,17 @@ public class MainUI extends UI {
                 content = new LeaderBoardUI().create("Top GitHub Star Masters", this::getStarSum);
             } else if ("/leaderboard/watchers".equals(path)) {
                 content = new LeaderBoardUI().create("Most Followed GitHub Commiters", this::getFollowers);
+            } else if ("/leaderboard".equals(path)) {
+                content = VaadinBuilders.horizontalLayout()
+                        .setSpacing(true)
+                        .addComponent(new LeaderBoardUI().create("Most Followed GitHub Commiters", this::getFollowers))
+                        .addComponent(new LeaderBoardUI().create("Top GitHub Star Masters", this::getStarSum))
+                        .build();
             } else {
                 content = new RegistrationUI().create();
             }
             setContent(VaadinBuilders.verticalLayout()
-                .setAttributes(vaWidth100, vaHeight100, vaSpacing)
+                    .setAttributes(vaWidth100, vaHeight100, vaSpacing)
                 .setDefaultComponentAlignment(Alignment.MIDDLE_CENTER)
                 .setStyleName("background-pattern")
                 .addComponent(content)

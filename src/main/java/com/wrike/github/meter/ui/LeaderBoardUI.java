@@ -99,7 +99,7 @@ public class LeaderBoardUI {
                         .thenComparing(GitHubUserWithMetric::getUsername)
                         .reversed()
                 )
-                .limit(5)
+                .limit(8)
                 .collect(Collectors.toList());
 
         VerticalLayout layout = VaadinBuilders.verticalLayout()
