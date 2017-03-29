@@ -515,7 +515,7 @@
 
   .background-pattern {
     background-image: url(/img/pattern_01.png);
-    background-color: aliceblue;
+    background-size: cover;
   }
 
   .leaderboard {
@@ -530,5 +530,9 @@
     border-style: dashed;
     border-width: medium;
     border-color: lightseagreen;
+  }
+
+  .bg-color-window {
+    background-color: #5958C9;
   }
 }

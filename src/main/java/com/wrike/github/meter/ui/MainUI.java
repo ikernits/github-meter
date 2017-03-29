@@ -34,7 +34,7 @@ import static org.ikernits.vaadin.VaadinComponentAttributes.LayoutAttributes.vaS
  * Created by ikernits on 10/10/15.
  */
 @Title("GitHub Meter Challenge")
-@Theme("valo-ext-flat")
+@Theme("valo-ext-metro")
 public class MainUI extends UI {
 
     static Logger log = Logger.getLogger(RegistrationUI.class);

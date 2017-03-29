@@ -104,23 +104,14 @@ public class RegistrationUI {
             .build();
 
         VerticalLayout content = VaadinBuilders.verticalLayout()
-            .setAttributes(vaWidth100, vaHeight100)
+            .setWidth(640, Sizeable.Unit.PIXELS)
+            .setHeight(480, Sizeable.Unit.PIXELS)
             .setDefaultComponentAlignment(Alignment.MIDDLE_CENTER)
             .addComponent(form)
+            .addStyleName("bg-color-window")
             .build();
 
-        Panel panel = VaadinBuilders.panel()
-            .setWidth(700, Sizeable.Unit.PIXELS)
-            .setHeight(500, Sizeable.Unit.PIXELS)
-            .setContent(content)
-            .build();
-
-
-        return VaadinBuilders.verticalLayout()
-            .setAttributes(vaWidth100, vaHeight100, vaSpacing)
-            .setDefaultComponentAlignment(Alignment.MIDDLE_CENTER)
-            .addComponent(panel)
-            .build();
+        return content;
     }
 
     protected Component createCompletionPanel() {
@@ -265,16 +256,14 @@ public class RegistrationUI {
             .build();
 
         VerticalLayout content = VaadinBuilders.verticalLayout()
-            .setAttributes(vaWidth100, vaHeight100)
+            .setWidth(640, Sizeable.Unit.PIXELS)
+            .setHeight(480, Sizeable.Unit.PIXELS)
             .setDefaultComponentAlignment(Alignment.MIDDLE_CENTER)
+            .addStyleName("bg-color-window")
             .addComponent(form)
             .build();
 
-        return VaadinBuilders.panel()
-            .setWidth(700, Sizeable.Unit.PIXELS)
-            .setHeight(500, Sizeable.Unit.PIXELS)
-            .setContent(content)
-            .build();
+        return content;
     }
 
     private Component createRegistrationPanel() {
@@ -308,16 +297,14 @@ public class RegistrationUI {
             .build();
 
         VerticalLayout content = VaadinBuilders.verticalLayout()
-            .setAttributes(vaWidth100, vaHeight100)
+            .setWidth(640, Sizeable.Unit.PIXELS)
+            .setHeight(480, Sizeable.Unit.PIXELS)
             .setDefaultComponentAlignment(Alignment.MIDDLE_CENTER)
             .addComponent(form)
+            .addStyleName("bg-color-window")
             .build();
 
-        return VaadinBuilders.panel()
-            .setWidth(700, Sizeable.Unit.PIXELS)
-            .setHeight(500, Sizeable.Unit.PIXELS)
-            .setContent(content)
-            .build();
+        return content;
     }
 
     VerticalLayout container = VaadinBuilders.verticalLayout()

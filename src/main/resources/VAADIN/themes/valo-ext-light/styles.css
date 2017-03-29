@@ -15268,7 +15268,7 @@ div.v-layout.v-horizontal.v-widget {
 
 .valo-ext-light .background-pattern {
 	background-image: url(/img/pattern_01.png);
-	background-color: aliceblue;
+	background-size: cover;
 }
 
 .valo-ext-light .leaderboard {
@@ -15283,4 +15283,8 @@ div.v-layout.v-horizontal.v-widget {
 	border-style: dashed;
 	border-width: medium;
 	border-color: lightseagreen;
+}
+
+.valo-ext-light .bg-color-window {
+	background-color: #5958C9;
 }
