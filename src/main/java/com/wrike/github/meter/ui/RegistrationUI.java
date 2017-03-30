@@ -38,38 +38,41 @@ public class RegistrationUI {
     private GitHubDataService gitHubDataService = VaadinServices.getGitHubDataService();
     private GitHubQueryService gitHubQueryService = VaadinServices.getGitHubQueryService();
 
-    protected Component createSearchPanel() {
+    protected HorizontalLayout createUserLayout() {
         Label reposLabel;
         HorizontalLayout userLayout = VaadinBuilders.horizontalLayout()
-            .setWidth(360, Sizeable.Unit.PIXELS)
-            .setHeight(180, Sizeable.Unit.PIXELS)
-            .setDefaultComponentAlignment(Alignment.MIDDLE_LEFT)
-            .addComponent(VaadinBuilders.label()
-                .setWidth(160, Sizeable.Unit.PIXELS)
-                .setHeight(160, Sizeable.Unit.PIXELS)
-                .setValue("<img style=\"width:160px; height:160px\" src=\"" + gitHubUser.getAvatar_url() + "\"></img>")
-                .setContentMode(ContentMode.HTML)
-                .build())
-            .setDefaultComponentAlignment(Alignment.MIDDLE_RIGHT)
-            .addComponent(VaadinBuilders.verticalLayout()
-                .setWidth(160, Sizeable.Unit.PIXELS)
-                .setHeight(160, Sizeable.Unit.PIXELS)
-                .setDefaultComponentAlignment(Alignment.TOP_LEFT)
+                .setWidth(360, Sizeable.Unit.PIXELS)
+                .setHeight(180, Sizeable.Unit.PIXELS)
+                .setDefaultComponentAlignment(Alignment.MIDDLE_LEFT)
                 .addComponent(VaadinBuilders.label()
-                    .setHeight(60.f, Sizeable.Unit.PIXELS)
-                    .setValue("<span style=\"font-size: 40px; color: white\">" + gitHubUser.getLogin() + "</span>")
-                    .setContentMode(ContentMode.HTML)
-                    .build())
-                .addComponent(reposLabel = VaadinBuilders.label()
-                    .setHeight(80.f, Sizeable.Unit.PIXELS)
-                    .setValue("<span style=\"font-size: 80px; font-weight: 800; color: white\">" + gitHubReposCount + "</span>" +
-                        "<span style=\"font-size: 16px; color: white\"> repos </span>")
-                    .setContentMode(ContentMode.HTML)
-                    .build())
-                .setExpandRatio(reposLabel, 1.f)
-                .build())
-            .build();
+                        .setWidth(160, Sizeable.Unit.PIXELS)
+                        .setHeight(160, Sizeable.Unit.PIXELS)
+                        .setValue("<img style=\"width:160px; height:160px\" src=\"" + gitHubUser.getAvatar_url() + "\"></img>")
+                        .setContentMode(ContentMode.HTML)
+                        .build())
+                .setDefaultComponentAlignment(Alignment.MIDDLE_RIGHT)
+                .addComponent(VaadinBuilders.verticalLayout()
+                        .setWidth(160, Sizeable.Unit.PIXELS)
+                        .setHeight(160, Sizeable.Unit.PIXELS)
+                        .setDefaultComponentAlignment(Alignment.TOP_LEFT)
+                        .addComponent(VaadinBuilders.label()
+                                .setHeight(60.f, Sizeable.Unit.PIXELS)
+                                .setValue("<span style=\"font-size: 40px; color: white\">" + gitHubUser.getLogin() + "</span>")
+                                .setContentMode(ContentMode.HTML)
+                                .build())
+                        .addComponent(reposLabel = VaadinBuilders.label()
+                                .setHeight(80.f, Sizeable.Unit.PIXELS)
+                                .setValue("<span style=\"font-size: 80px; font-weight: 800; color: white\">" + gitHubReposCount + "</span>" +
+                                        "<span style=\"font-size: 16px; color: white\"> repos </span>")
+                                .setContentMode(ContentMode.HTML)
+                                .build())
+                        .setExpandRatio(reposLabel, 1.f)
+                        .build())
+                .build();
+        return userLayout;
+    }
 
+    protected Component createSearchPanel() {
         VerticalLayout form = VaadinBuilders.verticalLayout()
             .setWidth(580, Sizeable.Unit.PIXELS)
             .setHeight(480, Sizeable.Unit.PIXELS)
@@ -85,7 +88,7 @@ public class RegistrationUI {
                     "color: white" +
                     "\">We have found you!</div>")
                 .build())
-            .addComponent(userLayout)
+            .addComponent(createUserLayout())
             .addComponent(VaadinBuilders.horizontalLayout()
                 .setWidth(360.f, Sizeable.Unit.PIXELS)
                 .setDefaultComponentAlignment(Alignment.MIDDLE_LEFT)
@@ -137,39 +140,12 @@ public class RegistrationUI {
                 .sum();
         long followerCount = gitHubUser.getFollowers();
 
-
-        VerticalLayout detailsLayout;
-        HorizontalLayout userLayout = VaadinBuilders.horizontalLayout()
-                .setAttributes(vaStyleMarginNormal)
-                .setWidth(500, Sizeable.Unit.PIXELS)
-                .setHeight(180, Sizeable.Unit.PIXELS)
-                .setDefaultComponentAlignment(Alignment.MIDDLE_CENTER)
-                .addComponent(VaadinBuilders.label()
-                        .setWidth(200, Sizeable.Unit.PIXELS)
-                        .setHeight(160, Sizeable.Unit.PIXELS)
-                        .setValue("<img style=\"width:160px; height:160px\" src=\"" + gitHubUser.getAvatar_url() + "\"></img>")
-                        .setContentMode(ContentMode.HTML)
-                        .build())
-                .addComponent(VaadinBuilders.verticalLayout()
-                        .addComponent(VaadinBuilders.label()
-                                .setValue("<span style=\"font-size: 50px\">" + gitHubUser.getLogin() + "</span>")
-                                .setContentMode(ContentMode.HTML)
-                                .build())
-                        .addComponent(VaadinBuilders.label()
-                                .setValue("<span style=\"font-size: 80px\">" + gitHubReposCount + "</span>" +
-                                        "<span style=\"font-size: 16px\"> repos </span>")
-                                .setContentMode(ContentMode.HTML)
-                                .build())
-                        .build())
-             //   .setExpandRatio(detailsLayout, 1.f)
-                .build();
-
         VerticalLayout form = VaadinBuilders.verticalLayout()
-                .setAttributes(vaStyleMarginNormal)
-                .setWidth(600, Sizeable.Unit.PIXELS)
+                .setWidth(580, Sizeable.Unit.PIXELS)
+                .setHeight(480, Sizeable.Unit.PIXELS)
                 .setHeightUndefined()
-                .setDefaultComponentAlignment(Alignment.MIDDLE_CENTER)
-                .addComponent(userLayout)
+                .setDefaultComponentAlignment(Alignment.TOP_CENTER)
+                .addComponent(createUserLayout())
                 .addComponent(VaadinBuilders.horizontalLayout()
                         .setWidth(100.f, Sizeable.Unit.PERCENTAGE)
                         .setDefaultComponentAlignment(Alignment.MIDDLE_CENTER)
@@ -190,38 +166,17 @@ public class RegistrationUI {
                                 .setContentMode(ContentMode.HTML)
                                 .build())
                         .build())
-                .addComponent(VaadinBuilders.horizontalLayout()
-                        .addComponent(
-                                VaadinBuilders.button()
-                                        .setAttributes(vaStyleMarginNormal)
-                                        .setCaption("Go to registration")
-                                        .addClickListener(e -> {
-                                            storeGitHubUser();
-                                            container.removeAllComponents();
-                                            container.addComponent(createRegistrationPanel());
-                                        })
-                                        .build())
-                        .build())
                 .build();
 
         VerticalLayout content = VaadinBuilders.verticalLayout()
-                .setAttributes(vaWidth100, vaHeight100)
+                .setWidth(640, Sizeable.Unit.PIXELS)
+                .setHeight(480, Sizeable.Unit.PIXELS)
                 .setDefaultComponentAlignment(Alignment.MIDDLE_CENTER)
                 .addComponent(form)
+                .addStyleName("bg-color-window")
                 .build();
 
-        Panel panel = VaadinBuilders.panel()
-                .setWidth(700, Sizeable.Unit.PIXELS)
-                .setHeight(500, Sizeable.Unit.PIXELS)
-                .setContent(content)
-                .build();
-
-
-        return VaadinBuilders.verticalLayout()
-                .setAttributes(vaWidth100, vaHeight100, vaSpacing)
-                .setDefaultComponentAlignment(Alignment.MIDDLE_CENTER)
-                .addComponent(panel)
-                .build();
+        return content;
     }
 
 
