@@ -15282,6 +15282,14 @@ div.v-layout.v-horizontal.v-widget {
 	background-color: #5958C9;
 }
 
+.valo-ext .bg-color-button-green {
+	background-color: #1fca6d;
+}
+
+.valo-ext .bg-color-button-orange {
+	background-color: #fd9036;
+}
+
 html {
 	width: 100px;
 	min-width: 100%;

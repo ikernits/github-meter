@@ -15288,3 +15288,11 @@ div.v-layout.v-horizontal.v-widget {
 .valo-ext-light .bg-color-window {
 	background-color: #5958C9;
 }
+
+.valo-ext-light .bg-color-button-green {
+	background-color: #1fca6d;
+}
+
+.valo-ext-light .bg-color-button-orange {
+	background-color: #fd9036;
+}
