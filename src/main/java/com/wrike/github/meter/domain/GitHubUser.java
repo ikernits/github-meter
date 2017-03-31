@@ -8,6 +8,8 @@ public class GitHubUser {
     private String email;
     private long public_repos;
     private long followers;
+    private String created_at;
+    private String updated_at;
 
     public String getLogin() {
         return login;
@@ -35,5 +37,13 @@ public class GitHubUser {
 
     public long getFollowers() {
         return followers;
+    }
+
+    public String getCreated_at() {
+        return created_at;
+    }
+
+    public String getUpdated_at() {
+        return updated_at;
     }
 }

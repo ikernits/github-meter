@@ -41,26 +41,6 @@ public class MainUI extends UI {
 
     private GitHubDataService gitHubDataService = VaadinServices.getGitHubDataService();
 
-    private long getStarSum(String username) {
-        GitHubUser user = gitHubDataService.findGitHubUser(username);
-        if (user == null) {
-            return 0;
-        }
-        List<GitHubRepo> repos = gitHubDataService.listGitHubUserRepos(username);
-        return repos.stream()
-            .filter(r -> r.getOwner().getId() == user.getId())
-            .mapToLong(GitHubRepo::getStargazers_count)
-            .sum();
-    }
-
-    public long getFollowers(String username) {
-        GitHubUser user = gitHubDataService.findGitHubUser(username);
-        if (user == null) {
-            return 0;
-        }
-        return user.getFollowers();
-    }
-
     @Override
     protected void init(VaadinRequest vaadinRequest) {
 
@@ -69,14 +49,15 @@ public class MainUI extends UI {
             VaadinServletRequest request = (VaadinServletRequest) vaadinRequest;
             String path = request.getPathInfo();
             if ("/leaderboard/stars".equals(path)) {
-                content = new LeaderBoardUI().create("Top GitHub Star Masters", this::getStarSum);
-            } else if ("/leaderboard/watchers".equals(path)) {
-                content = new LeaderBoardUI().create("Most Followed GitHub Commiters", this::getFollowers);
+                content = new LeaderBoardUI().create("Top GitHub Star Masters", gitHubDataService::getStarSumMapper);
+            } else if ("/leaderboard/followers".equals(path)) {
+                content = new LeaderBoardUI().create("Most Followed GitHub Commiters", gitHubDataService::getFollowersMapper);
             } else if ("/leaderboard".equals(path)) {
                 content = VaadinBuilders.horizontalLayout()
-                        .setSpacing(true)
-                        .addComponent(new LeaderBoardUI().create("Most Followed GitHub Commiters", this::getFollowers))
-                        .addComponent(new LeaderBoardUI().create("Top GitHub Star Masters", this::getStarSum))
+                        .setWidth(1100, Unit.PIXELS)
+                        .setDefaultComponentAlignment(Alignment.MIDDLE_CENTER)
+                        .addComponent(new LeaderBoardUI().create("Most Followed GitHub Commiters", gitHubDataService::getFollowersMapper))
+                        .addComponent(new LeaderBoardUI().create("Top GitHub Star Masters", gitHubDataService::getStarSumMapper))
                         .build();
             } else {
                 content = new RegistrationUI().create();

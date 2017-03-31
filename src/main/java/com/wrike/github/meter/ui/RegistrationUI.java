@@ -1,13 +1,13 @@
 package com.wrike.github.meter.ui;
 
-import com.vaadin.server.FontAwesome;
+import com.vaadin.event.ShortcutAction;
+import com.vaadin.event.ShortcutListener;
 import com.vaadin.server.Sizeable;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.wrike.github.meter.domain.GitHubAvatar;
@@ -16,20 +16,18 @@ import com.wrike.github.meter.domain.GitHubUser;
 import com.wrike.github.meter.service.GitHubDataService;
 import com.wrike.github.meter.service.GitHubQueryService;
 import com.wrike.github.meter.service.VaadinServices;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.ikernits.vaadin.VaadinBuilders;
 
 import java.util.List;
 
-import static org.ikernits.vaadin.VaadinComponentAttributes.ComponentAttributes.vaHeight100;
-import static org.ikernits.vaadin.VaadinComponentAttributes.ComponentAttributes.vaStyleMarginNormal;
 import static org.ikernits.vaadin.VaadinComponentAttributes.ComponentAttributes.vaStylePaddingNormal;
 import static org.ikernits.vaadin.VaadinComponentAttributes.ComponentAttributes.vaWidth100;
 import static org.ikernits.vaadin.VaadinComponentAttributes.LayoutAttributes.vaSpacing;
 
 public class RegistrationUI {
     static Logger log = Logger.getLogger(RegistrationUI.class);
-
 
     private GitHubUser gitHubUser;
     private List<GitHubRepo> gitHubRepos;
@@ -62,8 +60,9 @@ public class RegistrationUI {
                                 .build())
                         .addComponent(reposLabel = VaadinBuilders.label()
                                 .setHeight(80.f, Sizeable.Unit.PIXELS)
-                                .setValue("<span style=\"font-size: 80px; font-weight: 800; color: white\">" + gitHubReposCount + "</span>" +
-                                        "<span style=\"font-size: 16px; color: white\"> repos </span>")
+                                .setValue("<div style=\"width: 200px\">" +
+                                    "   <span style=\"font-size: 80px; font-weight: 800; color: white\">" + gitHubReposCount + "</span>" +
+                                        "<span style=\"font-size: 16px; color: white\">repos</span></div>")
                                 .setContentMode(ContentMode.HTML)
                                 .build())
                         .setExpandRatio(reposLabel, 1.f)
@@ -139,42 +138,61 @@ public class RegistrationUI {
                 .mapToLong(GitHubRepo::getStargazers_count)
                 .sum();
         long followerCount = gitHubUser.getFollowers();
+        int total = gitHubDataService.listGitHubUsers().size();
+        long starPlace = gitHubDataService.findGitHubUserRating(gitHubUser.getLogin(), gitHubDataService::getStarSumMapper);
+        long followerPlace = gitHubDataService.findGitHubUserRating(gitHubUser.getLogin(), gitHubDataService::getFollowersMapper);
 
         VerticalLayout form = VaadinBuilders.verticalLayout()
-                .setWidth(580, Sizeable.Unit.PIXELS)
-                .setHeight(480, Sizeable.Unit.PIXELS)
-                .setHeightUndefined()
-                .setDefaultComponentAlignment(Alignment.TOP_CENTER)
-                .addComponent(createUserLayout())
-                .addComponent(VaadinBuilders.horizontalLayout()
-                        .setWidth(100.f, Sizeable.Unit.PERCENTAGE)
-                        .setDefaultComponentAlignment(Alignment.MIDDLE_CENTER)
-                        .addComponent(VaadinBuilders.label()
-                                .setWidthUndefined()
-                                .setValue(
-                                        "<div><span style=\"font-size: 48px; margin-right: 16px\">" + FontAwesome.STAR.getHtml() + "</span>" +
-                                                "<span style=\"font-size: 60px\">" + starCount + "</span>" +
-                                                "<span style=\"font-size: 16px\"> stars</span></div><div>#4 of 10</div>")
-                                .setContentMode(ContentMode.HTML)
-                                .build())
-                        .addComponent(VaadinBuilders.label()
-                                .setWidthUndefined()
-                                .setValue(
-                                        "<span style=\"font-size: 48px; margin-right: 16px\">" + FontAwesome.USERS.getHtml() + "</span>" +
-                                                "<span style=\"font-size: 60px\">" + followerCount + "</span>" +
-                                                "<span style=\"font-size: 16px\"> followers</span>")
-                                .setContentMode(ContentMode.HTML)
-                                .build())
-                        .build())
-                .build();
+            .setWidth(580, Sizeable.Unit.PIXELS)
+            .setHeight(400, Sizeable.Unit.PIXELS)
+            .setDefaultComponentAlignment(Alignment.MIDDLE_CENTER)
+            .addComponent(createUserLayout())
+            .addComponent(VaadinBuilders.horizontalLayout()
+                .setWidth(580.f, Sizeable.Unit.PIXELS)
+                .setDefaultComponentAlignment(Alignment.MIDDLE_RIGHT)
+                .addComponent(VaadinBuilders.label()
+                    .setHeight(180.f, Sizeable.Unit.PIXELS)
+                    .setWidthUndefined()
+                    .setContentMode(ContentMode.HTML)
+                    .setValue("<div style=\"min-width:160px; padding-right: 20px;\">" +
+                        "<div>" +
+                        "  <div style=\"display: inline-block; vertical-align: middle\"><img align=\"middle\" style=\"width: 60px;height: 60px\" src=\"/img/element-08.png\"/></div>" +
+                        "  <div style=\"font-size: 60px;color: white; font-weight: 600; " +
+                        "vertical-align: middle; display: inline;" +
+                        "padding-left: 10px; padding-right: 10px\">-</div>" +
+                        "  <div style=\"vertical-align: middle; font-size: 60px;color: white; font-weight: 600; float: right\">" + starCount + "</div>" +
+                        "</div>" +
+                        "<div>" +
+                        "  <div style=\"display: inline-block; vertical-align: middle\"><img align=\"middle\" style=\"width: 60px;height: 60px\" src=\"/img/element-07.png\"/></div>" +
+                        "  <div style=\"font-size: 60px;color: white; font-weight: 600; " +
+                        "vertical-align: middle; display: inline;" +
+                        "padding-left: 10px; padding-right: 10px\">-</div>" +
+                        "  <div style=\"vertical-align: middle; font-size: 60px;color: white; font-weight: 600; float: right\">" + followerCount + "</div>" +
+                        "</div>" +
+                        "</div>"
+                    )
+                    .build())
+                .setDefaultComponentAlignment(Alignment.MIDDLE_LEFT)
+                .addComponent(VaadinBuilders.label()
+                    .setHeight(180.f, Sizeable.Unit.PIXELS)
+                    .setWidthUndefined()
+                    .setContentMode(ContentMode.HTML)
+                    .setValue("<div style=\"min-width:160px; padding-left: 20px;\">" +
+                        "  <div style=\"vertical-align: middle; font-size: 40px;color: white; font-weight: 200; padding-top: 20px\">#" + starPlace + " of " + total + "</div>" +
+                        "  <div style=\"vertical-align: middle; font-size: 40px;color: white; font-weight: 200; padding-top: 30px\">#" + followerPlace + " of " + total + "</div>" +
+                        "</div>"
+                    )
+                    .build())
+                .build())
+            .build();
 
         VerticalLayout content = VaadinBuilders.verticalLayout()
-                .setWidth(640, Sizeable.Unit.PIXELS)
-                .setHeight(480, Sizeable.Unit.PIXELS)
-                .setDefaultComponentAlignment(Alignment.MIDDLE_CENTER)
-                .addComponent(form)
-                .addStyleName("bg-color-window")
-                .build();
+            .setWidth(640, Sizeable.Unit.PIXELS)
+            .setHeight(480, Sizeable.Unit.PIXELS)
+            .setDefaultComponentAlignment(Alignment.MIDDLE_CENTER)
+            .addComponent(form)
+            .addStyleName("bg-color-window")
+            .build();
 
         return content;
     }
@@ -207,18 +225,27 @@ public class RegistrationUI {
 
     private Component createNotFoundPanel(String username) {
         VerticalLayout form = VaadinBuilders.verticalLayout()
-            .setAttributes(vaStylePaddingNormal, vaSpacing)
             .setWidth(500, Sizeable.Unit.PIXELS)
-            .setHeight(300, Sizeable.Unit.PIXELS)
+            .setHeight(480, Sizeable.Unit.PIXELS)
             .setDefaultComponentAlignment(Alignment.MIDDLE_CENTER)
             .addComponent(VaadinBuilders.label()
                 .setWidthUndefined()
                 .setContentMode(ContentMode.HTML)
-                .setValue("<div style = \"text-align:center; font-size: 32px\">Sorry, we have not found</div>" +
-                    "<div style = \"text-align:center; font-size: 40px\">" + username + "</div>")
+                .setValue(
+                    "<div style = \"text-align:center; font-size: 32px; font-weight: 800; color: white\">Sorry</div>" +
+                    "<div style = \"text-align:center; font-size: 40px; font-weight: 800; color: white\">" + username + "</div>" +
+                    "<div style = \"text-align:center; font-size: 32px; font-weight: 200; color: white\">we have not found you on GitHub</div>"
+                )
                 .build())
             .addComponent(VaadinBuilders.button()
-                .setCaption("Go back to registration")
+                .setHeight(80.f, Sizeable.Unit.PIXELS)
+                .setWidth(280.f, Sizeable.Unit.PIXELS)
+                .setStyleName("bg-color-button-green")
+                .setCaption("<span style = \"" +
+                    "font-size: 20px;" +
+                    "color: white;" +
+                    "\">Go back to registration</span>")
+                .setCaptionAsHtml(true)
                 .addClickListener(e -> {
                     container.removeAllComponents();
                     container.addComponent(createRegistrationPanel());
@@ -235,6 +262,17 @@ public class RegistrationUI {
             .build();
 
         return content;
+    }
+
+    private void processRegistrationEnter(String username) {
+        if (!StringUtils.isBlank(username)) {
+            container.removeAllComponents();
+            if (loadGitHubUserData(username)) {
+                container.addComponent(createSearchPanel());
+            } else {
+                container.addComponent(createNotFoundPanel(username));
+            }
+        }
     }
 
     private Component createRegistrationPanel() {
@@ -283,17 +321,17 @@ public class RegistrationUI {
                         "color: white;" +
                         "\">Get ready for challenge</span>")
                     .setCaptionAsHtml(true)
-                    .addClickListener(e -> {
-                        container.removeAllComponents();
-                        if (loadGitHubUserData(username.getValue())) {
-                            container.addComponent(createSearchPanel());
-                        } else {
-                            container.addComponent(createNotFoundPanel(username.getValue()));
-                        }
-                    })
+                    .addClickListener(e -> processRegistrationEnter(username.getValue()))
                     .build())
                 .build())
             .build();
+
+        username.addShortcutListener(new ShortcutListener("Enter", ShortcutAction.KeyCode.ENTER, null) {
+            @Override
+            public void handleAction(Object sender, Object target) {
+                processRegistrationEnter(username.getValue());
+            }
+        });
 
         VerticalLayout content = VaadinBuilders.verticalLayout()
             .setWidth(640, Sizeable.Unit.PIXELS)
