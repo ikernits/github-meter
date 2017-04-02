@@ -9,6 +9,7 @@ import com.wrike.github.meter.domain.GitHubUser;
 import com.wrike.github.meter.ui.LeaderBoardUI;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Required;
@@ -21,8 +22,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class GitHubDataService implements InitializingBean {
     private static final Logger log = Logger.getLogger(GitHubDataService.class);
@@ -218,5 +221,58 @@ public class GitHubDataService implements InitializingBean {
             i++;
         }
         return i;
+    }
+
+    static class GitHubUserWithInfo {
+        final Map<String, Integer> langs;
+        final GitHubUser user;
+
+        public GitHubUserWithInfo(GitHubUser user, List<GitHubRepo> repos) {
+            this.langs = repos.stream()
+                .collect(Collectors.groupingBy(r -> StringUtils.defaultIfBlank(r.getLanguage(), "n/a"), Collectors.summingInt(r -> 1)));
+            this.user = user;
+        }
+
+        public Map<String, Integer> getLangs() {
+            return langs;
+        }
+
+        public GitHubUser getUser() {
+            return user;
+        }
+    }
+
+    public static List<GitHubUserWithInfo> loadUsersFromDir(String path) throws IOException {
+        GitHubDataService gitHubDataService = new GitHubDataService();
+        gitHubDataService.setDataDir(path);
+        gitHubDataService.setAvatarDir("./local/temp");
+        gitHubDataService.afterPropertiesSet();
+        return gitHubDataService.listGitHubUsers().stream()
+                .map(user -> new GitHubUserWithInfo(
+                    gitHubDataService.findGitHubUser(user),
+                    gitHubDataService.listGitHubUserRepos(user)
+                ))
+                .collect(Collectors.toList());
+    }
+
+    public static void main(String[] args) throws IOException {
+       List<GitHubUserWithInfo> day1 = loadUsersFromDir("./local/results/data-2017-04-01/users");
+       List<GitHubUserWithInfo> day2 = loadUsersFromDir("./local/results/data-2017-04-02/users");
+
+       Map<String, GitHubUserWithInfo> total = Stream.concat(day1.stream(), day2.stream())
+               .collect(Collectors.toMap(user -> user.getUser().getLogin(), u -> u, (u1, u2) -> {
+                   System.out.println("duplicate: " + u2.getUser().getLogin());
+                   return u2;
+               }));
+
+
+       total.values()
+               .forEach(ui -> {
+                   System.out.println(String.format("%s,%s,%s",
+                       ui.getUser().getLogin(),
+                       ui.getUser().getEmail(),
+                       ui.getLangs().toString()
+                   ));
+               });
     }
 }
