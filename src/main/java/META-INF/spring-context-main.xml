@@ -37,6 +37,7 @@
     <bean id="gitHubDataService" class="com.wrike.github.meter.service.GitHubDataService">
         <property name="dataDir" value="${github.user.data.dir}"/>
         <property name="avatarDir" value="${github.user.avatar.dir}"/>
+        <property name="dateLockFile" value="${github.user.date.lock.file}"/>
     </bean>
 
     <bean id="vaadinServices" class="com.wrike.github.meter.service.VaadinServices">

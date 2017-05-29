@@ -59,6 +59,8 @@ public class MainUI extends UI {
                         .addComponent(new LeaderBoardUI().create("Most Followed GitHub Commiters", gitHubDataService::getFollowersMapper))
                         .addComponent(new LeaderBoardUI().create("Top GitHub Star Masters", gitHubDataService::getStarSumMapper))
                         .build();
+            } else if ("/admin".equals(path)) {
+                content = new ManageUI().create();
             } else {
                 content = new RegistrationUI().create();
             }

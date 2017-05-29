@@ -7,10 +7,12 @@ import com.wrike.github.meter.domain.GitHubAvatar;
 import com.wrike.github.meter.domain.GitHubRepo;
 import com.wrike.github.meter.domain.GitHubUser;
 import com.wrike.github.meter.ui.LeaderBoardUI;
+import com.wrike.github.meter.util.DateTimeUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Required;
 
@@ -32,6 +34,7 @@ public class GitHubDataService implements InitializingBean {
     private static final Gson gson = new Gson();
 
     protected String dataDir;
+    protected String dateLockFile;
     protected String avatarDir;
 
     @Required
@@ -42,6 +45,10 @@ public class GitHubDataService implements InitializingBean {
     @Required
     public void setAvatarDir(String avatarDir) {
         this.avatarDir = avatarDir;
+    }
+
+    public void setDateLockFile(String dateLockFile) {
+        this.dateLockFile = dateLockFile;
     }
 
     private static class GitHubUserData {
@@ -66,13 +73,22 @@ public class GitHubDataService implements InitializingBean {
     public void afterPropertiesSet() throws IOException {
         FileUtils.forceMkdir(new File(dataDir));
 
+        long lockDateTime;
+
+        try {
+            String lockDate = FileUtils.readFileToString(new File(dateLockFile));
+            lockDateTime = DateTime.parse(lockDate).getMillis();
+        } catch (IOException | IllegalArgumentException e) {
+            lockDateTime = 0;
+        }
+
         File[] userDataFiles = new File(dataDir).listFiles(pathname -> pathname.getName().endsWith(".json"));
         if (userDataFiles != null) {
             for (File dataFile : userDataFiles) {
                 try {
                     GitHubUserData userData = gson.fromJson(FileUtils.readFileToString(dataFile), GitHubUserData.class);
                     GitHubUserData currentData = gitHubUserDataMap.get(userData.user.getLogin());
-                    if (currentData == null || currentData.timestamp < userData.timestamp) {
+                    if ( (currentData == null || currentData.timestamp < userData.timestamp) && (userData.timestamp > lockDateTime)) {
                         gitHubUserDataMap.put(userData.user.getLogin(), userData);
                     }
                 } catch (IOException | JsonParseException e) {
@@ -82,6 +98,16 @@ public class GitHubDataService implements InitializingBean {
         }
 
         log.info("loaded " + gitHubUserDataMap.size() + " user data files");
+    }
+
+    public void resetDb() {
+        try {
+            FileUtils.writeStringToFile(new File(dateLockFile), DateTime.now().toString());
+            gitHubUserDataMap.clear();
+            log.info("github user data reset at: " + DateTime.now());
+        } catch (IOException e) {
+            log.error("failed to reset github user data", e);
+        }
     }
 
     public void addGitHubUser(GitHubUser user, List<GitHubRepo> repos, GitHubAvatar avatar) {
