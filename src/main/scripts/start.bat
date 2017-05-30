@@ -1,0 +1,1 @@
+java -Xmx1G -Dserver.action=start -jar github-meter.jar

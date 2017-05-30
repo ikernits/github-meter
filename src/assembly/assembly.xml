@@ -6,6 +6,7 @@
     <id>deployment</id>
     <formats>
         <format>tar.gz</format>
+        <format>zip</format>
     </formats>
     <baseDirectory>target</baseDirectory>
     <includeBaseDirectory>false</includeBaseDirectory>
@@ -19,10 +20,11 @@
             </includes>
         </fileSet>
         <fileSet>
-            <directory>./src/scripts</directory>
-            <outputDirectory>scripts</outputDirectory>
+            <directory>./src/main/scripts</directory>
+            <outputDirectory>.</outputDirectory>
             <includes>
                 <include>*.sh</include>
+                <include>*.bat</include>
             </includes>
         </fileSet>
     </fileSets>

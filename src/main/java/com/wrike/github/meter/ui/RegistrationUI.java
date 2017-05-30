@@ -303,6 +303,12 @@ public class RegistrationUI {
                     .setCaption("<span style = \"" +
                         "color: white" +
                         "\">Enter your GitHub Username</span>")
+                    .addShortcutListener(new ShortcutListener("Submit", ShortcutAction.KeyCode.ENTER, null) {
+                        @Override
+                        public void handleAction(Object sender, Object target) {
+                            processRegistrationEnter(((TextField)target).getValue());
+                        }
+                    })
                     .setCaptionAsHtml(true)
                     .setAttributes(vaWidth100)
                     .build())

@@ -6,11 +6,10 @@ import com.google.gson.JsonParseException;
 import com.wrike.github.meter.domain.GitHubAvatar;
 import com.wrike.github.meter.domain.GitHubRepo;
 import com.wrike.github.meter.domain.GitHubUser;
-import com.wrike.github.meter.ui.LeaderBoardUI;
-import com.wrike.github.meter.util.DateTimeUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.InitializingBean;
@@ -19,15 +18,14 @@ import org.springframework.beans.factory.annotation.Required;
 import java.io.File;
 import java.io.IOException;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class GitHubDataService implements InitializingBean {
     private static final Logger log = Logger.getLogger(GitHubDataService.class);
@@ -252,11 +250,17 @@ public class GitHubDataService implements InitializingBean {
     static class GitHubUserWithInfo {
         final Map<String, Integer> langs;
         final GitHubUser user;
+        final DateTime registrationDate;
 
-        public GitHubUserWithInfo(GitHubUser user, List<GitHubRepo> repos) {
+        public GitHubUserWithInfo(GitHubUser user, List<GitHubRepo> repos, long timestamp) {
             this.langs = repos.stream()
                 .collect(Collectors.groupingBy(r -> StringUtils.defaultIfBlank(r.getLanguage(), "n/a"), Collectors.summingInt(r -> 1)));
             this.user = user;
+            this.registrationDate = new DateTime(timestamp);
+        }
+
+        public DateTime getRegistrationDate() {
+            return registrationDate;
         }
 
         public Map<String, Integer> getLangs() {
@@ -268,37 +272,47 @@ public class GitHubDataService implements InitializingBean {
         }
     }
 
-    public static List<GitHubUserWithInfo> loadUsersFromDir(String path) throws IOException {
-        GitHubDataService gitHubDataService = new GitHubDataService();
-        gitHubDataService.setDataDir(path);
-        gitHubDataService.setAvatarDir("./local/temp");
-        gitHubDataService.afterPropertiesSet();
-        return gitHubDataService.listGitHubUsers().stream()
-                .map(user -> new GitHubUserWithInfo(
-                    gitHubDataService.findGitHubUser(user),
-                    gitHubDataService.listGitHubUserRepos(user)
-                ))
-                .collect(Collectors.toList());
+    public List<GitHubUserWithInfo> loadGitHubUsersData() throws IOException {
+        File[] userDataFiles = new File(dataDir).listFiles(pathname -> pathname.getName().endsWith(".json"));
+        Map<String, GitHubUserData> userDataMap = new HashMap<>();
+        if (userDataFiles != null) {
+            for (File dataFile : userDataFiles) {
+                try {
+                    GitHubUserData userData = gson.fromJson(FileUtils.readFileToString(dataFile), GitHubUserData.class);
+                    GitHubUserData currentData = userDataMap.get(userData.user.getLogin());
+                    if (currentData == null || currentData.timestamp < userData.timestamp) {
+                        userDataMap.put(userData.user.getLogin(), userData);
+                    }
+                } catch (IOException | JsonParseException e) {
+                    log.warn("failed to load userdata file: " + dataFile, e);
+                }
+            }
+        }
+        return userDataMap.values().stream()
+            .map(ghu -> new GitHubUserWithInfo(ghu.user, ghu.repos, ghu.timestamp))
+            .collect(Collectors.toList());
     }
 
-    public static void main(String[] args) throws IOException {
-       List<GitHubUserWithInfo> day1 = loadUsersFromDir("./local/results/data-2017-04-01/users");
-       List<GitHubUserWithInfo> day2 = loadUsersFromDir("./local/results/data-2017-04-02/users");
+    public String generateGitHubUserCsv() {
+        try {
+            List<GitHubUserWithInfo> userList = loadGitHubUsersData();
+            Map<String, GitHubUserWithInfo> total = userList.stream()
+                .collect(Collectors.toMap(user -> user.getUser().getLogin(), u -> u, (u1, u2) -> {
+                    System.out.println("duplicate: " + u2.getUser().getLogin());
+                    return u2;
+                }));
+            return total.values().stream()
+                .sorted(Comparator.comparing(GitHubUserWithInfo::getRegistrationDate))
+                .map(ui -> String.format("%s,%s,%s,%s",
+                    ui.getRegistrationDate().toString("YYYY-MM-dd HH:mm:ss"),
+                    ui.getUser().getLogin(),
+                    ui.getUser().getEmail(),
+                    ui.getLangs().toString()
+                ))
+                .collect(Collectors.joining("\n"));
 
-       Map<String, GitHubUserWithInfo> total = Stream.concat(day1.stream(), day2.stream())
-               .collect(Collectors.toMap(user -> user.getUser().getLogin(), u -> u, (u1, u2) -> {
-                   System.out.println("duplicate: " + u2.getUser().getLogin());
-                   return u2;
-               }));
-
-
-       total.values()
-               .forEach(ui -> {
-                   System.out.println(String.format("%s,%s,%s",
-                       ui.getUser().getLogin(),
-                       ui.getUser().getEmail(),
-                       ui.getLangs().toString()
-                   ));
-               });
+        } catch (IOException e) {
+            return ExceptionUtils.getStackTrace(e);
+        }
     }
 }
